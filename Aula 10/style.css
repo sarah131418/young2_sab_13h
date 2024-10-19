@@ -68,5 +68,12 @@ input[type= "radio"]{
 }
 
 .correta {
+    color: green;
+    font-weight: bold;
      
+}
+
+.incorreta{
+    color: red;
+    font-style: italic;
 }
