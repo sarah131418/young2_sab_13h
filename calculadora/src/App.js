@@ -1,15 +1,11 @@
-
 import './App.css';
-import Calculator from './Calculator';
-import Counter from './Counter';
+import { Calculator } from './Calculator';
+
 
 function App() {
   return (
-    <>
     <Calculator/>
-    <Counter/>
-    </>
-  );
+  )
 }
 
 export default App;
