@@ -1,7 +1,8 @@
 import { useState } from "react";
 
 function AddQuest(props){
-    const [title, setTitle]= useState()
+    const [title, setTitle] = useState()
+
     return(
         <div className="flex gap-4 w-full justify-center items-center">
             <input type="text" placeholder="quest" className="rounded-full bg-secondary pl-2 input-sm flex w-[70%] focus:outline-none" onChange={(e)=> setTitle(e.target.value)}/>
