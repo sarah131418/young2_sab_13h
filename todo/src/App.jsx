@@ -2,9 +2,11 @@ import AddQuest from './AddQuest'
 import { useState } from 'react'
 import './App.css'
 import QuestList from './QuestList'
+import { filter } from 'mathjs'
 
 function App() {
 
+  const localQuests = JSON.parse(window.localStorage.getItem("quests")) || []
   const [quests, setQuests] = useState([])
 
   function saveAddQuest(title){
@@ -14,6 +16,19 @@ function App() {
       id = auxQuests[auxQuests.length - 1].id
     }
     id++
+    function savedEditQuest(quest, title) {
+      let auxQuests = quests
+      const editedQuest = {
+        id: quest.id,
+        title: title || quest.title,
+        status: quest.status,
+        created_at: quest.created_at,
+      };
+      const findQuestPosition = auxQuests.findIndex(
+        (quest) => quest.id === editedQuest.id
+      )
+    }
+    function saveConcludedQuest(quest) {}
     const createQuest = {
       id: id,
       title: title,
@@ -27,6 +42,8 @@ function App() {
     function getQuests(){
       setQuests(JSON.parse(window.localStorage.getItem("quests")))
     }
+    const concluedQuests = quests.filter((quest) => quest.status === "concluded")
+    const notConcludedQuests = quests.filter((quest) => quest.status === "aberto")
   
 
   return(
