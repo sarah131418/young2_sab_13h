@@ -1,53 +1,62 @@
 import { useState } from "react";
 
-export default function(){
-    const[title,setTitle] = useState(props.quest.title)
+export default function QuestItem(props) {
+  const [title, setTitle] = useState(props.quest.title);
+  const [checked, setChecked] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const concluded = props.quest.status === "concluído";
 
-    const[checked,setChecked] = useState(false)
+  return (
+    <div className="flex gap-4 flex-col md:flex-row items-center" data-testid="questItem">
+      <div className="flex gap-4 items-center w-full sm:w-[80%]">
+        <input
+          disabled={concluded}
+          type="checkbox"
+          checked={checked}
+          className="checkbox rounded-full border"
+          onChange={() => {
+            if (!concluded) {
+              setChecked(!checked);
+              props.saveConcludedQuest(props.quest);
+            }
+          }}
+        />
 
-    const[editMode,setEditMode] = useState(false)
-
-    const conclued = props.quest.status === 'concluido'
-
-    return(
-        <div className="flex gap-4 flex-col md:flex-row items-center">
-            <div className="flex gap-4 items-center w-full sm:w [80%]">
-                <input 
-                    type="checkbox"
-                    disabled={conclued}
-                    checked = {checked}
-                    className="checkbox rounded-full border"
-                 />
-
-                {editMode && !conclued ? (
-                    <input
-                        placeholder="quest"
-                        defaultValue={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="rounded-full bg-secondary pl-2 w-full input-sm flex focus:outline-none"
-                    />
-                ) :(
-
-                 <p className="break-words">
-                    {props.quest.title}
-                 </p>
-                )}
-            </div>
-            <div className="flex gap-4 w-full sm:w-fit justify-center">
-                <button onClick={() => setEditMode(!editMode)} > editar</button>
-                <button>Excluir</button>
-            </div>
-        </div>
-        {!conclued && (
-            <div className="flex gap-4 w-full sm:w-fit justify-center">
-            <button onClick={() => {
-                if (editMode) props.savedEditQuest(props.quest, title);
-                setEditMode(!editMode);
-            }}>editar
-            </button>
-            <button>Excluir</button>
-            </div>
+        {editMode && !concluded ? (
+          <input
+            placeholder="quest"
+            defaultValue={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="rounded-full bg-secundary pl-2 w-full input-sm flex focus:outline-none"
+            data-testid="input"
+          />
+        ) : (
+          <p
+            className={`break-words ${concluded ? "line-through" : ""}`}
+            data-testid="title"
+          >
+            {props.quest.title}
+          </p>
         )}
-        
-    ) 
+      </div>
+      {!concluded && (
+        <div className="flex gap-4 w-full sm:w-fit justify-center" data-testid="buttons">
+          <button
+            data-testid="editButton"
+            onClick={() => {
+              if (editMode) props.saveEditQuest(props.quest, title);
+              setEditMode(!editMode);
+            }}
+          >
+            Editar
+          </button>
+          <button
+            onClick={() => props.saveDeleteQuest(props.quest)}
+          >
+            Excluir
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }

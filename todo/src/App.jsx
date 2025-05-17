@@ -1,62 +1,62 @@
-import AddQuest from './AddQuest'
-import { useState } from 'react'
-import './App.css'
-import QuestList from './QuestList'
-import { filter } from 'mathjs'
+import { useEffect, useState } from "react";
+import AddQuest from "./AddQuest";
+import QuestList from "./QuestList";
 
 function App() {
+  const [quests, setQuests] = useState([]);
 
-  const localQuests = JSON.parse(window.localStorage.getItem("quests")) || []
-  const [quests, setQuests] = useState([])
+  useEffect(() => {
+    const storedQuests = JSON.parse(localStorage.getItem("quests"));
+    if (storedQuests) setQuests(storedQuests);
+  }, []);
 
-  function saveAddQuest(title){
-    let auxQuests = quests
-    let id = 0
-    if(auxQuests.length){
-      id = auxQuests[auxQuests.length - 1].id
-    }
-    id++
-    function savedEditQuest(quest, title) {
-      let auxQuests = quests
-      const editedQuest = {
-        id: quest.id,
-        title: title || quest.title,
-        status: quest.status,
-        created_at: quest.created_at,
-      };
-      const findQuestPosition = auxQuests.findIndex(
-        (quest) => quest.id === editedQuest.id
-      )
-    }
-    function saveConcludedQuest(quest) {}
-    const createQuest = {
-      id: id,
+  function saveAddQuest(title) {
+    const newQuest = {
+      id: quests.length ? quests[quests.length - 1].id + 1 : 1,
       title: title,
       status: "aberto",
-      created_at: new Date(Date.now()).toUTCString(),
+      created_at: new Date().toUTCString(),
     };
-    auxQuests.push(createQuest)
-    localStorage.setItem("quests", JSON.stringify(auxQuests))
-    getQuests()
-    }
-    function getQuests(){
-      setQuests(JSON.parse(window.localStorage.getItem("quests")))
-    }
-    const concluedQuests = quests.filter((quest) => quest.status === "concluded")
-    const notConcludedQuests = quests.filter((quest) => quest.status === "aberto")
-  
 
-  return(
-    <div className='flex h-screen justify-center items-center'>
-      <div className='card w-[80%] lg:w-[50%] h-[70%] shadow-md rounded-sm transform ease-out duration-300 items-center p-10 gap-5'>
-        <h1 className='text-5xl font-work font-bold w-fit text-center'>
-          Quest To Do
-        </h1>
-        <AddQuest saveAddQuest={saveAddQuest}/>
-        <QuestList quests={quests}/>
-      </div>
-    </div>
-  )
+    const updatedQuests = [...quests, newQuest];
+    localStorage.setItem("quests", JSON.stringify(updatedQuests));
+    setQuests(updatedQuests);
+  }
+
+  function saveEditQuest(quest, newTitle) {
+    const updatedQuests = quests.map((q) =>
+      q.id === quest.id ? { ...q, title: newTitle } : q
+    );
+    localStorage.setItem("quests", JSON.stringify(updatedQuests));
+    setQuests(updatedQuests);
+  }
+
+  function saveConcludedQuest(quest) {
+    const updatedQuests = quests.map((q) =>
+      q.id === quest.id ? { ...q, status: "concluído" } : q
+    );
+    localStorage.setItem("quests", JSON.stringify(updatedQuests));
+    setQuests(updatedQuests);
+  }
+
+  function saveDeleteQuest(quest) {
+    const updatedQuests = quests.filter((q) => q.id !== quest.id);
+    localStorage.setItem("quests", JSON.stringify(updatedQuests));
+    setQuests(updatedQuests);
+  }
+
+  return (
+    <main className="flex flex-col items-center justify-center min-h-screen gap-10 py-16">
+      <h1 className="text-3xl font-bold">Quest Tracker</h1>
+      <AddQuest saveAddQuest={saveAddQuest} />
+      <QuestList
+        quests={quests}
+        saveEditQuest={saveEditQuest}
+        saveConcludedQuest={saveConcludedQuest}
+        saveDeleteQuest={saveDeleteQuest}
+      />
+    </main>
+  );
 }
 
-export default App
+export default App;
