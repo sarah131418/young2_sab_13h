@@ -1,4 +1,4 @@
-import QuestItem from "./QuestItem";
+import QuestItem from "../QuestItem";
 
 export default function QuestList(props) {
   return (
