@@ -1,9 +1,9 @@
 import React from "react";
 
-const Frase = ({text,autor}) =>{
+const Frase = ({texto, autor}) =>{
     return(
         <div>
-            <p>{text}</p>
+            <p>{texto}</p>
             <p className="underline decoration-sky-500"><em>{autor}</em></p>
         </div>
     )
